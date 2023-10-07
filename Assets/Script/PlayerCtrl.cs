@@ -66,11 +66,7 @@ public class PlayerCtrl : MonoBehaviour
 
     void OnLeftClick()  //좌클릭을 하면 호출되는 함수이다.
     {
-        /*
-        Debug.Log("Left Click");
-        Debug.Log(Mouse.current.position.ReadValue());
-        Debug.Log(camera.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
-        */
+        
     }
 
     void OnRightClick() //우클릭을 하면 호출되는 함수이다.
@@ -78,6 +74,24 @@ public class PlayerCtrl : MonoBehaviour
         if(!isDash && dashCoolTime <= 0)
         {
             StartCoroutine(Dash(camera.ScreenToWorldPoint(Mouse.current.position.ReadValue())));    // Dash 코루틴을 호출
+        }
+    }
+
+    void OnChangeTime(InputValue value)
+    {
+        Vector2 inputKey = value.Get<Vector2>();
+        Debug.Log(value.Get<Vector2>());
+        if(inputKey.y > 0)
+        {
+            StartCoroutine(GameManager.instance.ChangeTime(2));
+        }
+        else if(inputKey.y < 0)
+        {
+            StartCoroutine(GameManager.instance.ChangeTime(0));
+        }
+        else if(inputKey.x > 0)
+        {
+            StartCoroutine(GameManager.instance.ChangeTime(1));
         }
     }
 
