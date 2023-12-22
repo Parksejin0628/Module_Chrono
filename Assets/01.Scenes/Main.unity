@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 66333631}
   - component: {fileID: 66333630}
   - component: {fileID: 66333629}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall Tile_future
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1599,9 +1599,9 @@ GameObject:
   - component: {fileID: 661087211}
   - component: {fileID: 661087212}
   - component: {fileID: 661087213}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1858,6 +1858,8 @@ MonoBehaviour:
   dashTime: 0.15
   dashCoolTimeSetting: 0.5
   brakingPower: 0.75
+  jumpCount: 1
+  maxJumpCount: 1
 --- !u!1 &824029577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1872,7 +1874,7 @@ GameObject:
   - component: {fileID: 824029581}
   - component: {fileID: 824029580}
   - component: {fileID: 824029579}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall Tile_past
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3283,7 +3285,7 @@ GameObject:
   - component: {fileID: 930403874}
   - component: {fileID: 930403873}
   - component: {fileID: 930403872}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ground Tile_current
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5332,7 +5334,7 @@ GameObject:
   - component: {fileID: 1313410631}
   - component: {fileID: 1313410630}
   - component: {fileID: 1313410629}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ground Tile_future
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6965,7 +6967,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1390181747}
   - component: {fileID: 1390181746}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7137,7 +7139,7 @@ GameObject:
   - component: {fileID: 1825423023}
   - component: {fileID: 1825423022}
   - component: {fileID: 1825423021}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall Tile_current
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8643,7 +8645,7 @@ GameObject:
   - component: {fileID: 1913541431}
   - component: {fileID: 1913541430}
   - component: {fileID: 1913541429}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ground Tile_past
   m_TagString: Untagged
   m_Icon: {fileID: 0}

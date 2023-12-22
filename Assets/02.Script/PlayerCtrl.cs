@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using Unity.VisualScripting.InputSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,7 +11,7 @@ using UnityEngine.Windows;
 public class PlayerCtrl : MonoBehaviour
 {
     //컴포넌트를 받을 변수
-    Transform transform;
+    //Transform transform;
     Rigidbody2D rigidbody2D;
     PlayerInput playerInput;
     Camera camera;
@@ -25,13 +26,15 @@ public class PlayerCtrl : MonoBehaviour
     public float brakingPower = 0.75f;                  //키보드에서 키보드를 뗄 경우 감속되는 배율, 값은 0 ~ 1이다.
     private Vector2 inputVector;                        //상하좌우 버튼이 눌린 것을 백터로 표현한 변수, 오른쪽 방향키를 누르면 (1, 0)값을 가진다.
     private bool isDash = false;                        //대쉬 중인지 아닌지 확인시키는 함수
+    public int jumpCount = 1;
+    public int maxJumpCount = 1;
 
 
     // Start is called before the first frame update
     void Awake()
     {
         //컴포넌트 초기화
-        transform = GetComponent<Transform>();
+        //transform = GetComponent<Transform>();
         rigidbody2D = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
         camera = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -48,7 +51,7 @@ public class PlayerCtrl : MonoBehaviour
     void FixedUpdate()
     {
         Move();
-        
+        CheckIsGround();
     }
 
     void OnMove(InputValue value)   //방향키를 누르거나 땔 때 호출되는 함수이다.
@@ -60,8 +63,13 @@ public class PlayerCtrl : MonoBehaviour
 
     void OnJump()   //스페이스바를 누르면 호출되는 함수이다.
     {
+        if(jumpCount <= 0)
+        {
+            return;
+        }
         rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0);  //현재 받고 있는 힘의 크기와 상관없이 일정한 점프를 하기 위해 velocity를 0으로 고정 후 점프
         rigidbody2D.AddForce(Vector2.up * jumpPower, ForceMode2D.Force);
+        jumpCount--;
     }
 
     void OnLeftClick()  //좌클릭을 하면 호출되는 함수이다.
@@ -120,7 +128,33 @@ public class PlayerCtrl : MonoBehaviour
         {
             rigidbody2D.velocity = new Vector2(maxSpeed * -1, rigidbody2D.velocity.y);
         }
-        
+    }
+
+    void CheckIsGround()
+    {
+        float rayDistance = 0.1f;
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 2, 0, Vector2.down, rayDistance, LayerMask.GetMask("Ground"));
+        if (hit == true)
+        {
+            jumpCount = maxJumpCount;
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        float rayDistance = 0.1f;
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 2, 0, Vector2.down, rayDistance, LayerMask.GetMask("Ground"));
+        if (hit == true)
+        {
+            Gizmos.DrawRay(transform.position + Vector3.down * transform.localScale.y / 4, Vector3.down * hit.distance);
+            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y / 4 + Vector3.down * hit.distance, transform.localScale/2);
+        }
+        else
+        {
+            Gizmos.DrawRay(transform.position + Vector3.down * transform.localScale.y / 4, Vector3.down * rayDistance);
+            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y / 4 + Vector3.down * rayDistance, transform.localScale/2);
+        }
     }
     //대쉬를 수행하는 함수
     IEnumerator Dash(Vector3 targetPos)
