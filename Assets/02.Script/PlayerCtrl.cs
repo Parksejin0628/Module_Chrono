@@ -13,6 +13,7 @@ public class PlayerCtrl : MonoBehaviour
     //컴포넌트를 받을 변수
     Rigidbody2D rigidbody2D;
     PlayerInput playerInput;
+    GameObject virtualCamera;
     Camera camera;
 
     //캐릭터 기본 정보
@@ -44,6 +45,7 @@ public class PlayerCtrl : MonoBehaviour
         //컴포넌트 초기화
         rigidbody2D = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
+        virtualCamera = GameObject.Find("Virtual Camera");
         camera = GameObject.Find("Main Camera").GetComponent<Camera>();
         //플레이어 데이터 초기화
         
@@ -66,6 +68,7 @@ public class PlayerCtrl : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D coll)
     {
+        //대쉬 보너스를 먹은 겨우 대쉬를 추가한 뒤 게임 매니저의 대쉬 보너스 상호작용 함수를 보낸다.
         if(coll.CompareTag("DashBonus"))
         {
             if(dashCount < maxDashCount)
@@ -73,7 +76,13 @@ public class PlayerCtrl : MonoBehaviour
                 dashCount++;
                 StartCoroutine(GameManager.instance.InteractDashBonus(coll.gameObject));
             }
-
+        }
+        //포탈에 닿은 경우 포탈의 자식 좌표로 이동한다.
+        if(coll.CompareTag("Portal"))
+        {
+            virtualCamera.SetActive(false);
+            transform.position = coll.transform.GetChild(0).transform.position;
+            virtualCamera.SetActive(true);
         }
     }
 

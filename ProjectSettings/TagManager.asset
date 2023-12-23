@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - DashBonus
+  - Portal
   layers:
   - Default
   - TransparentFX

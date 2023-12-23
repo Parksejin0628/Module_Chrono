@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
         cameraTr.position = cameraTr.position - nowPoint.position + timePoint[timeTarget].position;
         nowPoint = timePoint[timeTarget];
         yield return new WaitForFixedUpdate();
-        //virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_YDamping = 1;
+        virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_YDamping = 1;
     }
 
     public IEnumerator InteractDashBonus(GameObject dashBonusObject)
