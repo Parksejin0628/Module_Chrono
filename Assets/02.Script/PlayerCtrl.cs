@@ -51,7 +51,10 @@ public class PlayerCtrl : MonoBehaviour
     void FixedUpdate()
     {
         Move();
-        CheckIsGround();
+        if(rigidbody2D.velocity.y < 0)
+        {
+            CheckIsGround();
+        }
     }
 
     void OnMove(InputValue value)   //방향키를 누르거나 땔 때 호출되는 함수이다.
@@ -132,8 +135,8 @@ public class PlayerCtrl : MonoBehaviour
 
     void CheckIsGround()
     {
-        float rayDistance = 0.1f;
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 2, 0, Vector2.down, rayDistance, LayerMask.GetMask("Ground"));
+        float rayDistance = 0.2f;
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 3, 0, Vector2.down, rayDistance, LayerMask.GetMask("Ground"));
         if (hit == true)
         {
             jumpCount = maxJumpCount;
@@ -142,24 +145,29 @@ public class PlayerCtrl : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        if (rigidbody2D.velocity.y > 0)
+        {
+            return;
+        }
         Gizmos.color = Color.red;
-        float rayDistance = 0.1f;
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 2, 0, Vector2.down, rayDistance, LayerMask.GetMask("Ground"));
+        float rayDistance = 0.2f;
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 3, 0, Vector2.down, rayDistance, LayerMask.GetMask("Ground"));
         if (hit == true)
         {
             Gizmos.DrawRay(transform.position + Vector3.down * transform.localScale.y / 4, Vector3.down * hit.distance);
-            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y / 4 + Vector3.down * hit.distance, transform.localScale/2);
+            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y / 4 + Vector3.down * hit.distance, transform.localScale/3);
         }
         else
         {
             Gizmos.DrawRay(transform.position + Vector3.down * transform.localScale.y / 4, Vector3.down * rayDistance);
-            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y / 4 + Vector3.down * rayDistance, transform.localScale/2);
+            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y / 4 + Vector3.down * rayDistance, transform.localScale/3);
         }
     }
     //대쉬를 수행하는 함수
     IEnumerator Dash(Vector3 targetPos)
     {
         Vector2 dashDirVec = new Vector2(targetPos.x - transform.position.x, targetPos.y - transform.position.y).normalized;    //대쉬방향벡터
+        float originGravity = rigidbody2D.gravityScale;
         //대쉬중임을 isDash를 통해 다른 함수에도 알린 뒤, 중력 및 가속을 0으로 만들고 대쉬 방향으로 큰 힘을 가한다.
         isDash = true;  
         rigidbody2D.gravityScale = 0f;
@@ -169,7 +177,7 @@ public class PlayerCtrl : MonoBehaviour
         yield return new WaitForSeconds(dashTime);
         dashCoolTime = dashCoolTimeSetting;
         rigidbody2D.velocity = Vector2.zero;
-        rigidbody2D.gravityScale = 1f;
+        rigidbody2D.gravityScale = originGravity;
         isDash = false;
     }
 }
