@@ -11,40 +11,46 @@ using UnityEngine.Windows;
 public class PlayerCtrl : MonoBehaviour
 {
     //컴포넌트를 받을 변수
-    //Transform transform;
     Rigidbody2D rigidbody2D;
     PlayerInput playerInput;
     Camera camera;
 
+    //캐릭터 기본 정보
     public float speed = 2.0f;                          //좌우 움직임의 가속 크기
     public float maxSpeed = 10.0f;                      //좌우 움직임의 최고 속도
-    public float jumpPower = 100.0f;                    //점프를 할 때 위로 가하는 힘의 크기
-    public float dashPower = 1000.0f;                   //대쉬를 할 때 가해지는 힘의 크기
-    public float dashTime = 0.1f;                       //대쉬를 하는 시간을 결정하는 변수
-    public float dashCoolTimeSetting = 0.5f;                    //대쉬 쿨타임을 조정하는 변수
-    private float dashCoolTime = 0f;                  //현재 대쉬 쿨타임
     public float brakingPower = 0.75f;                  //키보드에서 키보드를 뗄 경우 감속되는 배율, 값은 0 ~ 1이다.
     private Vector2 inputVector;                        //상하좌우 버튼이 눌린 것을 백터로 표현한 변수, 오른쪽 방향키를 누르면 (1, 0)값을 가진다.
-    private bool isDash = false;                        //대쉬 중인지 아닌지 확인시키는 함수
-    public int jumpCount = 1;
-    public int maxJumpCount = 1;
+    
+    //점프 관련 변수
+    public int jumpCount = 1;                           //남은 점프 개수
+    public int maxJumpCount = 1;                        //점프 충전시 회복되는 개수
+    public float jumpPower = 100.0f;                    //점프를 할 때 위로 가하는 힘의 크기
+    //대쉬 관련 변수
+    private bool isDash = false;                        //대쉬 중인지 아닌지 확인시키는 변수
+    public float dashPower = 1000.0f;                   //대쉬를 할 때 가해지는 힘의 크기
+    public float dashTime = 0.1f;                       //대쉬를 하는 시간을 결정하는 변수
+    public float dashCoolTimeSetting = 2f;            //대쉬 쿨타임을 조정하는 변수
+    public float dashCoolTime = 2f;                   //현재 대쉬 쿨타임
+    public float dashCount = 2;                         //남은 대쉬 개수
+    public float maxDashCount = 2;                      //대쉬 충전되는 개수
+    public float continuousDashDelay = 0.5f;            //연속으로 대쉬를 할 때의 딜레이 남은 시간
+    public float continuousDashDelaySetting = 0.5f;     //연속으로 대쉬를 할 때의 딜레이
+
 
 
     // Start is called before the first frame update
     void Awake()
     {
         //컴포넌트 초기화
-        //transform = GetComponent<Transform>();
+        
         rigidbody2D = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
         camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        dashCoolTime = dashCoolTimeSetting;
     }
     private void Update()
     {
-        if(dashCoolTime >= 0)
-        {
-            dashCoolTime -= Time.deltaTime;
-        }
+        SetCoolTime();
     }
 
     // Update is called once per frame
@@ -82,7 +88,7 @@ public class PlayerCtrl : MonoBehaviour
 
     void OnRightClick() //우클릭을 하면 호출되는 함수이다.
     {
-        if(!isDash && dashCoolTime <= 0)
+        if(!isDash && dashCount > 0 && continuousDashDelay <= 0)
         {
             StartCoroutine(Dash(camera.ScreenToWorldPoint(Mouse.current.position.ReadValue())));    // Dash 코루틴을 호출
         }
@@ -143,7 +149,25 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
+    void SetCoolTime()
+    {
+        if (dashCount < maxDashCount && dashCoolTime > 0)
+        {
+            dashCoolTime -= Time.deltaTime;
+            if(dashCoolTime < 0)
+            {
+                dashCount++;
+                dashCoolTime = dashCoolTimeSetting;
+            }
+        }
+
+        if(continuousDashDelay > 0)
+        {
+            continuousDashDelay -= Time.deltaTime;
+        }
+    }
+
+    /*void OnDrawGizmos()
     {
         if (rigidbody2D.velocity.y > 0)
         {
@@ -163,23 +187,27 @@ public class PlayerCtrl : MonoBehaviour
             Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y / 4 + Vector3.down * rayDistance, transform.localScale/3);
         }
     }
+    */
     //대쉬를 수행하는 함수
     IEnumerator Dash(Vector3 targetPos)
     {
         Vector2 dashDirVec = new Vector2(targetPos.x - transform.position.x, targetPos.y - transform.position.y).normalized;    //대쉬방향벡터
         float originGravity = rigidbody2D.gravityScale;
         //대쉬중임을 isDash를 통해 다른 함수에도 알린 뒤, 중력 및 가속을 0으로 만들고 대쉬 방향으로 큰 힘을 가한다.
-        isDash = true;  
+        isDash = true;
+        dashCount--;
         rigidbody2D.gravityScale = 0f;
         rigidbody2D.velocity = Vector2.zero;
         rigidbody2D.AddForce(dashDirVec * dashPower, ForceMode2D.Force);
         //대쉬 시간만큼 기다린 후 가속을 0으로 만들고 이전에 0으로 만들었던 중력을 원래대로 돌린다. 그 후 대쉬 쿨타임을 지정하고 isDash를 false 함으로써 대쉬를 종료한다. 
         yield return new WaitForSeconds(dashTime);
-        dashCoolTime = dashCoolTimeSetting;
+        continuousDashDelay = continuousDashDelaySetting;
         rigidbody2D.velocity = Vector2.zero;
         rigidbody2D.gravityScale = originGravity;
         isDash = false;
     }
+
+
 }
 
 
