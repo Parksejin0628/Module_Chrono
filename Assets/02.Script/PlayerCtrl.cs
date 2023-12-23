@@ -42,24 +42,38 @@ public class PlayerCtrl : MonoBehaviour
     void Awake()
     {
         //컴포넌트 초기화
-        
         rigidbody2D = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
         camera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        dashCoolTime = dashCoolTimeSetting;
+        //플레이어 데이터 초기화
+        
     }
     private void Update()
     {
-        SetCoolTime();
+        SetCoolTime(); //쿨타임 업데이트
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         Move();
-        if(rigidbody2D.velocity.y < 0)
+        //땅으로 떨어지는 중이면서 바닥에 닿을 경우 점프를 회복한다.
+        if(rigidbody2D.velocity.y < 0 && CheckIsGround())
         {
-            CheckIsGround();
+            jumpCount = maxJumpCount;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D coll)
+    {
+        if(coll.CompareTag("DashBonus"))
+        {
+            if(dashCount < maxDashCount)
+            {
+                dashCount++;
+                StartCoroutine(GameManager.instance.InteractDashBonus(coll.gameObject));
+            }
+
         }
     }
 
@@ -72,7 +86,7 @@ public class PlayerCtrl : MonoBehaviour
 
     void OnJump()   //스페이스바를 누르면 호출되는 함수이다.
     {
-        if(jumpCount <= 0)
+        if (jumpCount <= 0 || CheckIsGround() == false)
         {
             return;
         }
@@ -94,7 +108,7 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
-    void OnChangeTime(InputValue value)
+    void OnChangeTime(InputValue value) //시간을 변경 키를 누르면 작동하는 함수이다.
     {
         Vector2 inputKey = value.Get<Vector2>();
         Debug.Log(value.Get<Vector2>());
@@ -139,18 +153,25 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
-    void CheckIsGround()
+    bool CheckIsGround() //땅인지 체크하는 함수
     {
         float rayDistance = 0.2f;
         RaycastHit2D hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 3, 0, Vector2.down, rayDistance, LayerMask.GetMask("Ground"));
         if (hit == true)
         {
-            jumpCount = maxJumpCount;
+            return true;
         }
+        return false;
     }
 
     void SetCoolTime()
     {
+        //대쉬가 꽉차있으면 대쉬 쿨타임을 초기화한다.
+        if (dashCount == maxDashCount && dashCoolTime != dashCoolTimeSetting)
+        {
+            dashCoolTime = dashCoolTimeSetting;
+        }
+        //대쉬가 꽉차있지 않으면 대쉬 쿨타임을 돌게한다.
         if (dashCount < maxDashCount && dashCoolTime > 0)
         {
             dashCoolTime -= Time.deltaTime;
@@ -160,7 +181,7 @@ public class PlayerCtrl : MonoBehaviour
                 dashCoolTime = dashCoolTimeSetting;
             }
         }
-
+        //대쉬 연속 딜레이 쿨타임을 돌게 한다.
         if(continuousDashDelay > 0)
         {
             continuousDashDelay -= Time.deltaTime;
