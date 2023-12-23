@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 66333629}
   m_Layer: 7
   m_Name: Wall Tile_future
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1621,7 +1621,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 8
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1694,7 +1694,7 @@ Transform:
   m_GameObject: {fileID: 661087206}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.86, y: 1.26, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1743,7 +1743,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.75}
+  m_Size: {x: 0.5, y: 0.75}
   m_EdgeRadius: 0
 --- !u!114 &661087212
 MonoBehaviour:
@@ -1853,7 +1853,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 50
   maxSpeed: 10
-  jumpPower: 400
+  jumpPower: 1300
   dashPower: 2000
   dashTime: 0.15
   dashCoolTimeSetting: 0.5
@@ -1876,7 +1876,7 @@ GameObject:
   - component: {fileID: 824029579}
   m_Layer: 7
   m_Name: Wall Tile_past
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3287,7 +3287,7 @@ GameObject:
   - component: {fileID: 930403872}
   m_Layer: 7
   m_Name: Ground Tile_current
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5057,7 +5057,7 @@ Transform:
   m_GameObject: {fileID: 1113512137}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0.86, y: 1.26, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5152,7 +5152,7 @@ Transform:
   m_GameObject: {fileID: 1289656663}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0.86, y: 1.26, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5336,7 +5336,7 @@ GameObject:
   - component: {fileID: 1313410629}
   m_Layer: 7
   m_Name: Ground Tile_future
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6969,7 +6969,7 @@ GameObject:
   - component: {fileID: 1390181746}
   m_Layer: 7
   m_Name: Grid
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7141,7 +7141,7 @@ GameObject:
   - component: {fileID: 1825423021}
   m_Layer: 7
   m_Name: Wall Tile_current
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8647,7 +8647,7 @@ GameObject:
   - component: {fileID: 1913541429}
   m_Layer: 7
   m_Name: Ground Tile_past
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
