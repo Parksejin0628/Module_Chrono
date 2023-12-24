@@ -8,6 +8,7 @@ TagManager:
   - DashBonus
   - Portal
   - HpBonus
+  - Obstacle
   layers:
   - Default
   - TransparentFX
