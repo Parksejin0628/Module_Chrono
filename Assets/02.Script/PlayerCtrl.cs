@@ -21,7 +21,9 @@ public class PlayerCtrl : MonoBehaviour
     public float maxSpeed = 10.0f;                      //좌우 움직임의 최고 속도
     public float brakingPower = 0.75f;                  //키보드에서 키보드를 뗄 경우 감속되는 배율, 값은 0 ~ 1이다.
     private Vector2 inputVector;                        //상하좌우 버튼이 눌린 것을 백터로 표현한 변수, 오른쪽 방향키를 누르면 (1, 0)값을 가진다.
-    
+    public int hp = 5;                                      //체력
+    public int maxHp = 5;                                   //최대체력
+
     //점프 관련 변수
     public int jumpCount = 1;                           //남은 점프 개수
     public int maxJumpCount = 1;                        //점프 충전시 회복되는 개수
@@ -30,8 +32,8 @@ public class PlayerCtrl : MonoBehaviour
     private bool isDash = false;                        //대쉬 중인지 아닌지 확인시키는 변수
     public float dashPower = 1000.0f;                   //대쉬를 할 때 가해지는 힘의 크기
     public float dashTime = 0.1f;                       //대쉬를 하는 시간을 결정하는 변수
-    public float dashCoolTimeSetting = 2f;            //대쉬 쿨타임을 조정하는 변수
-    public float dashCoolTime = 2f;                   //현재 대쉬 쿨타임
+    public float dashCoolTimeSetting = 2f;              //대쉬 쿨타임을 조정하는 변수
+    public float dashCoolTime = 2f;                     //현재 대쉬 쿨타임
     public float dashCount = 2;                         //남은 대쉬 개수
     public float maxDashCount = 2;                      //대쉬 충전되는 개수
     public float continuousDashDelay = 0.5f;            //연속으로 대쉬를 할 때의 딜레이 남은 시간
@@ -80,9 +82,20 @@ public class PlayerCtrl : MonoBehaviour
         //포탈에 닿은 경우 포탈의 자식 좌표로 이동한다.
         if(coll.CompareTag("Portal"))
         {
-            virtualCamera.SetActive(false);
             transform.position = coll.transform.GetChild(0).transform.position;
-            virtualCamera.SetActive(true);
+        }
+        //체력 보너스를 먹은 후 체력을 회복한다.
+        if (coll.CompareTag("HpBonus"))
+        {
+            if(hp < maxHp)
+            {
+                hp++;
+                Destroy(coll.gameObject);
+            }
+        }
+        if(coll.CompareTag("Obstacle"))
+        {
+            hp--;
         }
     }
 

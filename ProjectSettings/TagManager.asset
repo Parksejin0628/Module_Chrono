@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - DashBonus
   - Portal
+  - HpBonus
   layers:
   - Default
   - TransparentFX
