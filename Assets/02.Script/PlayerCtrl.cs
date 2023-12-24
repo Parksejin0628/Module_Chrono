@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
 using Unity.VisualScripting.InputSystem;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
 
+public enum PlayerTime { CURRENT, PAST };
 
 public class PlayerCtrl : MonoBehaviour
 {
@@ -38,7 +40,8 @@ public class PlayerCtrl : MonoBehaviour
     public float maxDashCount = 2;                      //대쉬 충전되는 개수
     public float continuousDashDelay = 0.5f;            //연속으로 대쉬를 할 때의 딜레이 남은 시간
     public float continuousDashDelaySetting = 0.5f;     //연속으로 대쉬를 할 때의 딜레이
-
+    //맵 변경 관련 변수
+    public PlayerTime nowTime = PlayerTime.CURRENT;
 
 
     // Start is called before the first frame update
@@ -130,22 +133,19 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
-    void OnChangeTime(InputValue value) //시간을 변경 키를 누르면 작동하는 함수이다.
+    void OnChangeTime() //시간을 변경 키를 누르면 작동하는 함수이다.
     {
-        Vector2 inputKey = value.Get<Vector2>();
-        Debug.Log(value.Get<Vector2>());
-        if(inputKey.y > 0)
-        {
-            StartCoroutine(GameManager.instance.ChangeTime(2));
-        }
-        else if(inputKey.y < 0)
+        if(nowTime == PlayerTime.CURRENT)
         {
             StartCoroutine(GameManager.instance.ChangeTime(0));
+            nowTime = PlayerTime.PAST;
         }
-        else if(inputKey.x > 0)
+        else if(nowTime == PlayerTime.PAST)
         {
             StartCoroutine(GameManager.instance.ChangeTime(1));
+            nowTime = PlayerTime.CURRENT;
         }
+        
     }
 
     void Move()
