@@ -269,6 +269,8 @@ MonoBehaviour:
   speed: 50
   maxSpeed: 10
   brakingPower: 0.75
+  hp: 5
+  maxHp: 5
   jumpCount: 1
   maxJumpCount: 1
   jumpPower: 1300

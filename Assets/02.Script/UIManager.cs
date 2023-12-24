@@ -10,6 +10,8 @@ public class UIManager : MonoBehaviour
     public GameObject player;
     public Image[] dashImage;
     public TextMeshProUGUI dashCountText;
+    //체력 UI와 관련된 변수들
+    public GameObject[] hpUIObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +22,7 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         UpdateDashUI(); // 대쉬 UI 업데이트
+        UpdateHpUI();
     }
 
     void UpdateDashUI() //대쉬 UI를 업데이트 하는 함수
@@ -49,5 +52,21 @@ public class UIManager : MonoBehaviour
         }
         //대쉬 개수
         dashCountText.text = playerCtrl.dashCount.ToString();
+    }
+
+    void UpdateHpUI()
+    {
+        PlayerCtrl playerCtrl = player.GetComponent<PlayerCtrl>();
+        for(int i=0; i<hpUIObject.Length; i++)
+        {
+            if(playerCtrl.hp > i)
+            {
+                hpUIObject[i].SetActive(true);
+            }
+            else
+            {
+                hpUIObject[i].SetActive(false);
+            }
+        }
     }
 }
