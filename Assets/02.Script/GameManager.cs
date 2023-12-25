@@ -33,8 +33,8 @@ public class GameManager : MonoBehaviour
         
         if(stageIndex >= 20)
         {
-            Debug.Log("Loading");
-            SceneManager.LoadScene("Ending");
+            //Debug.Log("Loading");
+            SceneManager.LoadScene(1);
         }
     }
 
