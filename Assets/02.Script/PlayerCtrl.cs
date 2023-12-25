@@ -63,12 +63,15 @@ public class PlayerCtrl : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        RaycastHit2D hit;
         Move();
         //땅으로 떨어지는 중이면서 바닥에 닿을 경우 점프를 회복한다.
-        if(rigidbody2D.velocity.y < 0 && CheckIsGround())
+        if(rigidbody2D.velocity.y < 0 && CheckIsGround(LayerMask.GetMask("Ground"), out hit))
         {
+            Debug.Log(hit.collider.gameObject);
             jumpCount = maxJumpCount;
         }
+       
     }
 
     private void OnTriggerEnter2D(Collider2D coll)
@@ -111,13 +114,19 @@ public class PlayerCtrl : MonoBehaviour
 
     void OnJump()   //스페이스바를 누르면 호출되는 함수이다.
     {
-        if (jumpCount <= 0 || CheckIsGround() == false)
+        RaycastHit2D hit;
+        CheckIsGround(LayerMask.GetMask("Ground"), out hit);
+        if (hit == true&& inputVector.y < 0 && hit.collider.CompareTag("1-wayFlatform"))
         {
-            return;
+            Debug.Log("하단점프");
+            StartCoroutine(UnderJump(hit.collider));
         }
-        rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0);  //현재 받고 있는 힘의 크기와 상관없이 일정한 점프를 하기 위해 velocity를 0으로 고정 후 점프
-        rigidbody2D.AddForce(Vector2.up * jumpPower, ForceMode2D.Force);
-        jumpCount--;
+        else if (jumpCount > 0 && hit == true)
+        {
+            rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0);  //현재 받고 있는 힘의 크기와 상관없이 일정한 점프를 하기 위해 velocity를 0으로 고정 후 점프
+            rigidbody2D.AddForce(Vector2.up * jumpPower, ForceMode2D.Force);
+            jumpCount--;
+        }
     }
 
     void OnLeftClick()  //좌클릭을 하면 호출되는 함수이다.
@@ -147,7 +156,7 @@ public class PlayerCtrl : MonoBehaviour
         }
         
     }
-
+    
     void Move()
     {
         if (isDash) return; //만약 대쉬중인경우에는 이 함수를 중단시킨다.
@@ -175,10 +184,10 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
-    bool CheckIsGround() //땅인지 체크하는 함수
+    bool CheckIsGround(LayerMask layerMask, out RaycastHit2D hit) //layerMask 태크를 가진 땅인지 체크하는 함수
     {
         float rayDistance = 0.2f;
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 3, 0, Vector2.down, rayDistance, LayerMask.GetMask("Ground"));
+        hit = Physics2D.BoxCast(transform.position + Vector3.down * transform.localScale.y / 4, transform.localScale / 3, 0, Vector2.down, rayDistance, layerMask);
         if (hit == true)
         {
             return true;
@@ -248,6 +257,13 @@ public class PlayerCtrl : MonoBehaviour
         rigidbody2D.velocity = Vector2.zero;
         rigidbody2D.gravityScale = originGravity;
         isDash = false;
+    }
+
+    IEnumerator UnderJump(Collider2D underCollider)
+    {
+        Physics2D.IgnoreCollision(gameObject.GetComponent<BoxCollider2D>(), underCollider, true);
+        yield return new WaitForSeconds(0.25f);
+        Physics2D.IgnoreCollision(gameObject.GetComponent<BoxCollider2D>(), underCollider, false);
     }
 
 
