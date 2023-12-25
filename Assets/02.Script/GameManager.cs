@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     static public GameManager instance;
     public GameObject player;
     public GameObject camera;
-    public CinemachineVirtualCamera virtualCamera;
     //시간 변경과 관련된 변수
     public Transform[] timePoint;
     private Transform nowPoint;
@@ -34,12 +33,10 @@ public class GameManager : MonoBehaviour
         Transform playerTr = player.GetComponent<Transform>();
         Transform cameraTr = camera.GetComponent<Transform>();
 
-        virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_YDamping = 0;
         playerTr.position = playerTr.position - nowPoint.position + timePoint[timeTarget].position;
         cameraTr.position = cameraTr.position - nowPoint.position + timePoint[timeTarget].position;
         nowPoint = timePoint[timeTarget];
         yield return new WaitForFixedUpdate();
-        virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_YDamping = 1;
     }
 
     public IEnumerator InteractDashBonus(GameObject dashBonusObject)

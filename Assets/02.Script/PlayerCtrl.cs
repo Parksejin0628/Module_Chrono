@@ -68,7 +68,7 @@ public class PlayerCtrl : MonoBehaviour
         //땅으로 떨어지는 중이면서 바닥에 닿을 경우 점프를 회복한다.
         if(rigidbody2D.velocity.y < 0 && CheckIsGround(LayerMask.GetMask("Ground"), out hit))
         {
-            Debug.Log(hit.collider.gameObject);
+            //Debug.Log(hit.collider.gameObject);
             jumpCount = maxJumpCount;
         }
        
