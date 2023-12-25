@@ -58,6 +58,11 @@ public class PlayerCtrl : MonoBehaviour
     private void Update()
     {
         SetCoolTime(); //쿨타임 업데이트
+        if(hp<=0)
+        {
+            hp = 5;
+            GameManager.instance.Revive();
+        }
     }
 
     // Update is called once per frame
@@ -89,6 +94,7 @@ public class PlayerCtrl : MonoBehaviour
         if(coll.CompareTag("Portal"))
         {
             transform.position = coll.transform.GetChild(0).transform.position;
+            GameManager.instance.MoveNextStage();
         }
         //체력 보너스를 먹은 후 체력을 회복한다.
         if (coll.CompareTag("HpBonus"))
@@ -96,7 +102,7 @@ public class PlayerCtrl : MonoBehaviour
             if(hp < maxHp)
             {
                 hp++;
-                Destroy(coll.gameObject);
+                coll.gameObject.SetActive(false);
             }
         }
         if(coll.CompareTag("Obstacle"))
@@ -118,7 +124,7 @@ public class PlayerCtrl : MonoBehaviour
         CheckIsGround(LayerMask.GetMask("Ground"), out hit);
         if (hit == true&& inputVector.y < 0 && hit.collider.CompareTag("1-wayFlatform"))
         {
-            Debug.Log("하단점프");
+            //Debug.Log("하단점프");
             StartCoroutine(UnderJump(hit.collider));
         }
         else if (jumpCount > 0 && hit == true)
