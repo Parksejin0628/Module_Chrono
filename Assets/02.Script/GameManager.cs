@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     //세이브 로드와 관련된 변수
     public int stageIndex = 0;
     public StageInformation[] stageInformation;
+    public GameObject[] backGround;
     // Start is called before the first frame update
     void Awake()
     {
@@ -43,8 +44,9 @@ public class GameManager : MonoBehaviour
         Transform playerTr = player.GetComponent<Transform>();
         Transform cameraTr = camera.GetComponent<Transform>();
         nowPoint = stageInformation[stageIndex].timePoint[nowTime];
+        backGround[nowTime].SetActive(false);
         nowTime = timeTarget;
-
+        backGround[nowTime].SetActive(true);
         playerTr.position = playerTr.position - nowPoint.position + stageInformation[stageIndex].timePoint[timeTarget].position;
         cameraTr.position = cameraTr.position - nowPoint.position + stageInformation[stageIndex].timePoint[timeTarget].position;
         
