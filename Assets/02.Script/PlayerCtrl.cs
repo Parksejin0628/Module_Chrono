@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO.IsolatedStorage;
 using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
 using Unity.VisualScripting.InputSystem;
@@ -16,6 +17,8 @@ public class PlayerCtrl : MonoBehaviour
     Rigidbody2D rigidbody2D;
     PlayerInput playerInput;
     GameObject virtualCamera;
+    SpriteRenderer spriteRenderer;
+    Animator anim;
     Camera camera;
 
     //캐릭터 기본 정보
@@ -52,6 +55,8 @@ public class PlayerCtrl : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         virtualCamera = GameObject.Find("Virtual Camera");
         camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
         //플레이어 데이터 초기화
         
     }
@@ -91,10 +96,20 @@ public class PlayerCtrl : MonoBehaviour
         RaycastHit2D hit;
         Move();
         //땅으로 떨어지는 중이면서 바닥에 닿을 경우 점프를 회복한다.
-        if(rigidbody2D.velocity.y < 0 && CheckIsGround(LayerMask.GetMask("Ground"), out hit))
+        CheckIsGround(LayerMask.GetMask("Ground"), out hit);
+        if (rigidbody2D.velocity.y < 0 && hit == true)
         {
-            //Debug.Log(hit.collider.gameObject);
+            Debug.Log(hit.collider.gameObject);
             jumpCount = maxJumpCount;
+        }
+        anim.SetFloat("velocityY", rigidbody2D.velocity.y);
+        if(hit == true)
+        {
+            anim.SetBool("isFloat", false);
+        }
+        else if(hit == false)
+        {
+            anim.SetBool("isFloat", true);
         }
        
     }
@@ -191,6 +206,7 @@ public class PlayerCtrl : MonoBehaviour
         {
             //Debug.Log("stop");
             rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x * brakingPower, rigidbody2D.velocity.y);
+            anim.SetBool("isWalk", false);
             return;
         }
         //방향키를 전환할 때 빠르게 전환할 수 있도록 힘을 초기화한다.
@@ -198,6 +214,7 @@ public class PlayerCtrl : MonoBehaviour
         {
             rigidbody2D.velocity = new Vector2(0, rigidbody2D.velocity.y);
         }
+        anim.SetBool("isWalk", true);
         rigidbody2D.AddForce(Vector2.right * inputVector.x * speed, ForceMode2D.Force); //좌우로 움직인다.
         //힘을 너무 받아 maxSpeed 이상을 넘어갈 경우 힘을 고정시킨다.
         if(rigidbody2D.velocity.x > maxSpeed)
@@ -207,6 +224,14 @@ public class PlayerCtrl : MonoBehaviour
         else if (rigidbody2D.velocity.x < maxSpeed * -1)
         {
             rigidbody2D.velocity = new Vector2(maxSpeed * -1, rigidbody2D.velocity.y);
+        }
+        if(inputVector.x > 0)
+        {
+            spriteRenderer.flipX = false;
+        }
+        else if(inputVector.x < 0)
+        {
+            spriteRenderer.flipX = true;
         }
     }
 
@@ -274,6 +299,14 @@ public class PlayerCtrl : MonoBehaviour
         //대쉬중임을 isDash를 통해 다른 함수에도 알린 뒤, 중력 및 가속을 0으로 만들고 대쉬 방향으로 큰 힘을 가한다.
         isDash = true;
         dashCount--;
+        if (dashDirVec.x < 0)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if(dashDirVec.x > 0)
+        {
+            spriteRenderer.flipX = false;
+        }
         rigidbody2D.gravityScale = 0f;
         rigidbody2D.velocity = Vector2.zero;
         rigidbody2D.AddForce(dashDirVec * dashPower, ForceMode2D.Force);
