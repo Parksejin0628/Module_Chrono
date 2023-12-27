@@ -63,6 +63,26 @@ public class PlayerCtrl : MonoBehaviour
             hp = 5;
             GameManager.instance.Revive();
         }
+
+        if(rigidbody2D.velocity.y >= 40)
+        {
+            rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 40.0f);
+        }
+
+        if(rigidbody2D.velocity.y <= -40)
+        {
+            rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -40.0f);
+        }
+        
+        if(rigidbody2D.velocity.x >= 40)
+        {
+            rigidbody2D.velocity = new Vector2(40.0f, rigidbody2D.velocity.y);
+        }
+
+        if(rigidbody2D.velocity.x <= -40)
+        {
+            rigidbody2D.velocity = new Vector2(-40.0f, rigidbody2D.velocity.y);
+        }
     }
 
     // Update is called once per frame
